@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %} {{category}} - {{ parent() }}{% endblock %}
+{% block body %}
+
+    {# cf le __toString() dans Category #}
+    <h1>{{ category }}</h1>
+
+
+
+{% endblock %}
