@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Inscription</h1>
+
+    {{ form_start(form) }}
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.lastname) }}
+
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.firstname) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.email) }}
+
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.plainPassword) }}
+        </div>
+    </div>
+    <div class="text-right">
+        <button type="submit" class="btn btn-primary">S'inscrire</button>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}

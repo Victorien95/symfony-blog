@@ -1,12 +1,89 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Blog symfony !{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+
+        {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    {# S'il y a un utilisateur connecté et qu'il a le rôle ROLE_ADMIN #}
+    {% if is_granted('ROLE_ADMIN') %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_index_index') }}">Admin</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_admin_category_index') }}">Gestion catégories</a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    {% endif %}
+
+
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_index_index') }}">Blog</a>
+                {#   Affiche le rendu de la méthode menu() de CategoryControler  #}
+                {{ render(controller('App\\Controller\\CategoryController::menu')) }}
+                <ul class="navbar-nav">
+                    {% if app.user is null %}
+                        <li class="nav-item">
+                            <a href="{{ path('app_user_register') }}" class="nav-link">Inscription</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('app_user_login') }}" class="nav-link">Connexion</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <span class="navbar-text">Bienvenue {{ app.user }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('app_user_logout') }}" class="nav-link">Deconnexion</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+
+
+        <main class="container">
+            {# affichage des messages flash #}
+            {% for type, messages in app.session.flashBag.all %}
+                {# Pour la classe alrt-danger du boostrap #}
+                {% if type == 'error' %}
+                    {% set type = 'danger'%}
+                {% endif %}
+
+                {% for message in messages  %}
+                    <div class="alert alert-{{ type }} my-5">
+                        {{ message|raw }}
+                    </div>
+                {% endfor %}
+
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+
+        </main>
+        {% block javascripts %}
+            <script src="https://kit.fontawesome.com/e971e3c315.js" crossorigin="anonymous"></script>
+
+            <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        {% endblock %}
     </body>
 </html>
