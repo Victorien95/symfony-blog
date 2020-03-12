@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,13 +96,36 @@ class CategoryController extends AbstractController
      */
     public function delete(EntityManagerInterface $manager, Category $category)
     {
-        // supression en bdd
-        $manager->remove($category);
-        $manager->flush();
 
-        $this->addFlash('success', 'La categorie "' . $category->getName() . '" a bien ete supprimé');
+        $articles = $category->getArticles();
+
+        if ($articles->isEmpty())
+        {
+            $manager->remove($category);
+            $manager->flush();
+            $this->addFlash('success', 'La catégorie ' . $category->getName() . ' a été supprimé');
+        }else{
+            $this->addFlash('error', 'La catégorie ' . $category->getName() . ' ne peut pas être supprimé (contrainte d\'intégrité)');
+
+        }
+//        try {
+//            $manager->remove($category);
+//            $manager->flush();
+//            $message = 'La catégorie ' . $category->getName() . ' a bien été supprimé';
+//        } catch (DBALException $e) {
+//            $message = 'La catégorie ' . $category->getName() . ' ne peut pas être supprimé (contrainte d\'intégrité)';
+//        }
+//        $this->addFlash('error', $message);
+
+        // supression en bdd
+       // $manager->remove($category);
+        //$manager->flush();
+
+
+        //$this->addFlash('success', 'La categorie "' . $category->getName() . '" a bien ete supprimé');
 
         return $this->redirectToRoute('app_admin_category_index');
+        //return $this->render('index/index.html.twig');
     }
 
 

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center my-5">Edition Article</h1>
+    {# ouverture de la balise form #}
+    {{ form_start(form) }}
+    {# affiche le label + input#}
+    {{ form_row(form.title) }}  {# (form_label pour que le labler)(form_input pour que le inuput) #}
+    {{ form_row(form.category) }}  {# (form_label pour que le labler)(form_input pour que le inuput) #}
+    {{ form_row(form.content) }}  {# (form_label pour que le labler)(form_input pour que le inuput) #}
+
+    <div class="text-right">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <a href="{{ path('app_admin_category_index') }}" class="btn btn-outline-secondary">Retour</a>
+    </div>
+
+    {# fermeture de la balise form    #}
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+        });
+    </script>
+{% endblock %}
