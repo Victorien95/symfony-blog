@@ -59,6 +59,8 @@ class Article
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="article", cascade={"remove"})
+     * tri par defaut quand on appelle le getter:
+     * @ORM\OrderBy({"publicationDate": "DESC"})
      */
     private $comments;
 

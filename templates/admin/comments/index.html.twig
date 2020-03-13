@@ -17,9 +17,10 @@
         <tr>
             <td>{{ commentaire.user }}</td>
             <td>{{ commentaire.publicationDate|date }}</td>
-            <td>{{ commentaire.content }}</td>
+            <td>{{ commentaire.content|nl2br }}</td>
             <td><a href="{{ path('app_admin_comments_delete', {'id':  article.id}) }}" class="btn btn-danger">Supprimer</a></td>
         </tr>
     {% endfor %}
+        
     </table>
 {% endblock %}

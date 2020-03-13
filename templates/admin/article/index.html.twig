@@ -26,7 +26,8 @@
                 <td>{{ article.publicationDate|date('d/m/Y H:i') }}</td>
                 <td>{{ article.category }}</td>
                 <td>{{ article.author }}</td>
-                <td><a href="{{ path('app_admin_comments_index', {'id': article.id}) }}">{{ article.comments.count }}</a></td>
+                <td><a class="badge badge-info" href="{{ path('app_admin_comments_index', {'id': article.id}) }}">{{ article.comments.count }}</a></td>
+{#     variante <td><a href="{{ path('app_admin_comments_index', {'id': article.id}) }}">{{ article.comments|lenght }}</a></td>#}
                 {% if article.image is not null %}
                     <td><img height="50px" src="{{ asset('images/' ~ article.image)}}" alt=""></td>
                     {% else %}

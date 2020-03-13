@@ -66,7 +66,11 @@ class ArticleController extends AbstractController
                $manager->persist($commentaire);
                $manager->flush();
                $this->addFlash('success', 'Votre commentaire a été ajouté');
+               // permet d'empecher le renvoi du post avec un F5(actualisation). On redirige sur la meme page pour etre en GET et non plus en POST
                return $this->redirectToRoute('app_article_index', ['id' => $article->getId()]);
+               //variante avec route adaptative à la méthode en cours -> $request->get('_route') => renverra l'url de index ici
+               // return $this->redirectToRoute($request->get('_route'), ['id' => $article->getId()]);
+
            }
 
        }
