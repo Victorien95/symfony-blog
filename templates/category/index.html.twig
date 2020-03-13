@@ -7,6 +7,9 @@
     {# cf le __toString() dans Category #}
     <h1>{{ category }}</h1>
 
+    {% include 'article/_list.html.twig' with {"articles":articles} only %}
+
+
 
 
 {% endblock %}

@@ -6,4 +6,7 @@
 
     <h1>Bienvenue</h1>
 
+    <h2 class="my-4">Dernier articles</h2>
+    {% include 'article/_list.html.twig' with {"articles":articles} only %}
+
 {% endblock %}

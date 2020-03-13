@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+    {# cf le __toString() dans Category #}
+    <h1>{{ article }}</h1>
+
+        <p>Auteur: {{ article.author }}</p>
+        <p>Titre: {{ article.title }}</p>
+        <p>Categorie:{{ article.category }}</p>
+        <p>Contenue : <br>{{ article.content }}</p>
+        <p>Image : <br><img src="{{ asset('images/' ~ article.image) }}" alt=""></p>
+        <p>Date de publication : {{ article.publicationDate|date }}</p>
+
+
+
+{% endblock %}
+
+

@@ -9,8 +9,11 @@ use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -44,12 +47,23 @@ class ArticleController extends AbstractController
          * et l'auteur avec l'utilisateur connecté ($this->>getUser() dans un contrôleur
          */
 
+        //cf originalImage on set a null pour eviter erreur
+        $originalImage = null;
+
         if (is_null($id)){
             $article = new Article();
         }else{
             $article = $manager->find(Article::class, $id);
             if (is_null($article)){
                 throw new NotFoundHttpException();
+            }
+            if (!is_null($article->getImage())){
+
+                // nom du fichier venant de la bdd / On stock dans une varibale pour l'utiliser si on upload pas de nouvelle image
+                $originalImage = $article->getImage();
+                // pour le champ de formulaire qui attend un objet File
+                $article->setImage(new File($this->getParameter('upload_dir') . $article->getImage())
+                );
             }
         }
         $article->setAuthor($this->getUser());
@@ -75,6 +89,16 @@ class ArticleController extends AbstractController
                         // avec quel nom
                         $filename
                     );
+                    $article->setImage($filename);
+
+                    // supression de l'ancienne
+                    // s'il y en a
+                    if (!is_null($originalImage)){
+                        unlink($this->getParameter('upload_dir') . $originalImage);
+                    }
+                }else{
+                    // pour la modification; sans upload on remet le nom de l'image venant de la bdd
+                    $article->setImage($originalImage);
                 }
 
                 $manager->persist($article);
@@ -91,7 +115,8 @@ class ArticleController extends AbstractController
         return $this->render('admin/article/edit.html.twig',
             [
                 // passage du formulaire au template
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'original_image' => $originalImage
             ]
         );
     }
@@ -103,6 +128,15 @@ class ArticleController extends AbstractController
      */
     public function delete(EntityManagerInterface $manager, Article $article)
     {
+        if (!is_null($article->getImage())){
+            $image = $this->getParameter('upload_dir') . $article->getImage();
+            if(file_exists($image))
+            {
+                unlink($image);
+            }
+        }
+//        $image = $article->getImage();
+//        $this->delete('upload_dir', $image);
         // supression en bdd
         $manager->remove($article);
         $manager->flush();
@@ -112,6 +146,28 @@ class ArticleController extends AbstractController
         return $this->redirectToRoute('app_admin_article_index');
     }
 
+    /**
+     * @Route("/ajax/{id}")
+     */
+    public function ajax(Article $article)
+    {
+        // en text brute
+       //$reponse = new Response(nl2br($article->getContent()));
 
+       //return $reponse;
+
+        ////        ou en twig
+
+        return $this->render('admin/article/ajax.html.twig', ['article' => $article]);
+
+        ////        ou en json
+
+//        $reponse = [
+//            'titre' => $article->getTitle(),
+//            'contenu' => $article->getContent()
+//        ];
+//
+//        return new JsonResponse($reponse);
+    }
 
 }

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    <h1 class="my-5">Commentaire de l'article {{ article.title }}</h1>
+
+    <table class="table table-striped">
+        <tr>
+            <th>Auteur</th>
+            <th>Date</th>
+            <th>Contenu</th>
+            <th>Edition</th>
+        </tr>
+    {% for commentaire  in commentaires  %}
+        <tr>
+            <td>{{ commentaire.user }}</td>
+            <td>{{ commentaire.publicationDate|date }}</td>
+            <td>{{ commentaire.content }}</td>
+            <td><a href="{{ path('app_admin_comments_delete', {'id':  article.id}) }}" class="btn btn-danger">Supprimer</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

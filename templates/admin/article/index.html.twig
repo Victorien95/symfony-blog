@@ -14,7 +14,8 @@
             <th>Date pub.</th>
             <th>Catégorie</th>
             <th>Auteur</th>
-            <th>Contenu</th>
+            <th>Nombre de commentaires</th>
+            <th>Image</th>
             <th width="250px">Edition</th>
         </tr>
 
@@ -25,11 +26,82 @@
                 <td>{{ article.publicationDate|date('d/m/Y H:i') }}</td>
                 <td>{{ article.category }}</td>
                 <td>{{ article.author }}</td>
-                <td>{{ article.content }}</td>
+                <td><a href="{{ path('app_admin_comments_index', {'id': article.id}) }}">{{ article.comments.count }}</a></td>
+                {% if article.image is not null %}
+                    <td><img height="50px" src="{{ asset('images/' ~ article.image)}}" alt=""></td>
+                    {% else %}
+                        <td><p>Image indisponible</p></td>
+                {% endif %}
                 <td><a href="{{ path('app_admin_article_edit', {'id': article.id}) }}" class="btn btn-outline-primary">Modifier</a>
-                    <a href="{{ path('app_admin_article_delete', {'id': article.id}) }}" class="btn btn-outline-danger">Supprimer</a></td>
+                    <a  href="{{ path('app_admin_article_delete', {'id': article.id}) }}" class="btn btn-outline-danger">Supprimer</a>
+                    <a href="{{ path('app_admin_article_ajax', {'id': article.id}) }}" class="btn btn-outline-info myModal" data-toggle="modal" data-target="exampleModalLongTitle">Contenu de l'article</a></td>
             </tr>
         {% endfor %}
     </table>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+
+        $('.myModal').click(function () {
+            var url = $(this).attr('href');
+            recupText(url);
+            $('#exampleModalLong').modal({show:true});
+        });
+
+       function recupText(url){
+            // utiliser la class XMLHttpRequest (attention aux maj)
+            const xhr = new XMLHttpRequest();
+
+            // xhr est un objet qui contient plusieurs méthodes
+            // Nous allons utiliser surtout les 3 méthodes suivantes
+            // .open() = définir notre requête
+            // .onload = moment où l'on va récupéréer les données et dire ce que l'on va en faire
+            // .send() = envoyer la requête
+
+
+            // .open() dispose de 3 arguments
+            // Méthode = GET / POST
+            // URL / FICHIER
+            // boolean si on veut asynchrone true / false
+            xhr.open("GET", url, true);
+
+            xhr.onload = function()
+            {
+                // avant de commencer à manipuler les données. On doit vérifier que la requête est fini
+                if(xhr.status == 200){
+                   // var test = JSON.parse(xhr.responseText);
+                    document.querySelector('.modal-body').innerHTML = xhr.responseText;
+                    //console.log(test.titre);
+                }
+            };
+
+
+            // envoyer la requête
+            xhr.send();
+            console.log(xhr);
+        }
+    </script>
 {% endblock %}

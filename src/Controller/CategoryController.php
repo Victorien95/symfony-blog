@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,11 +19,13 @@ class CategoryController extends AbstractController
     /**
      * @Route("/{id}", requirements={"id": "\d+"})
      */
-    public function index(Category $category)
+    public function index(Category $category, ArticleRepository $repository)
     {
+        $articles = $repository->findBy(['category' => $category], ['publicationDate' => 'DESC'], 3);
         return $this->render('category/index.html.twig',
         [
-            'category' => $category
+            'category' => $category,
+            'articles' => $articles
         ]
         );
     }

@@ -25,3 +25,15 @@
     </table>
 
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $('.btn-delete').click(function (event) {
+                event.preventDefault();
+            })
+
+        })
+    </script>
+{% endblock %}

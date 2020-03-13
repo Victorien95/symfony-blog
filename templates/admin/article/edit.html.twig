@@ -8,6 +8,11 @@
     {{ form_row(form.title) }}  {# (form_label pour que le labler)(form_input pour que le inuput) #}
     {{ form_row(form.category) }}  {# (form_label pour que le labler)(form_input pour que le inuput) #}
     {{ form_row(form.content) }}  {# (form_label pour que le labler)(form_input pour que le inuput) #}
+    {{ form_row(form.image) }}  {# (form_label pour que le labler)(form_input pour que le inuput) #}
+    {% if original_image is not null %}
+        <p>Actuellement :</p>
+        <img src="{{ asset('images/' ~ original_image) }}" height="150px" alt="image article">
+    {% endif %}
 
     <div class="text-right">
         <button type="submit" class="btn btn-primary">Enregistrer</button>

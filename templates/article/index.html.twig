@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block body %}
+    <h1 class="mt-5">{{ article.title }}</h1>
+
+    <p>Par {{ article.author }},
+    <em> le {{ article.publicationDate|date('d/m/Y H:i') }}</em>
+        <strong>
+            Dans <a href="{{ path('app_category_index', {'id': article.category.id}) }}">
+                {{ article.category }}
+            </a>
+        </strong>
+    </p>
+    {% if article.image is not null %}
+        <div>
+            <img src="{{ asset('images/' ~ article.image) }}" width="100%" alt="">
+        </div>
+    {% endif %}
+    {{ article.content|nl2br }}
+
+    <h3 class="bg-primary text-white px-2 py-2 my-5">Commentaires</h3>
+
+
+    {% if user is not null %}
+        {{ form_start(form) }}
+        {{ form_row(form.content) }}
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+        {{ form_end(form) }}
+    {% else %}
+        <a href="{{ path('app_user_login') }}" class="btn btn-primary">Connectez-vous pour laisser un commentaire</a>
+    {% endif %}
+
+    {% if comments is not empty %}
+        {% for comment in comments  %}
+            <div class="row">
+                <div class="col-12 my-3">
+                    <p class="col-12" style="border-bottom: 1px solid darkgray">Posté par: {{ comment.user }}, le {{ comment.publicationDate|date }}</p>
+                    <p>{{ comment.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Pas de commentaire pour cette article</p>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="my-5">Tous les articles</h1>
+
+    {% for article in all_articles  %}
+        <div class="row my-5">
+            <div class="col-10">
+                <h3>{{ article.title }}</h3>
+                <div>
+                    <p>{{ article.author }} le {{ article.publicationDate|date('d/m/Y') }}</p>
+                    <a href="{{ path('app_category_index', {'id': article.id}) }}">Aller vers l'article</a>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+{% endblock %}
+
+
+
